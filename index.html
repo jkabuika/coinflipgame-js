@@ -47,6 +47,19 @@
       margin-top: 20px;
       display: none; /* Initially hide the images */
     }
+    .loader {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-top: 4px solid #007bff;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
@@ -56,11 +69,11 @@
     <button onclick="guessResult('tails')">Tails</button>
     <div class="result" id="result"></div>
     <div class="score" id="score"></div>
+    <div class="loader" id="loader" style="display: none;"></div>
     <img id="coinImage" src="./assets/coin-794.png" alt="">
     <img id="tailImage" src="./assets/tail.png" alt="">
   </div>
   <script>
-    // Initialize score from localStorage or start at 0
     let wins = parseInt(localStorage.getItem('wins')) || 0;
     let losses = parseInt(localStorage.getItem('losses')) || 0;
     updateScoreDisplay();
@@ -71,36 +84,43 @@
     }
 
     function guessResult(guess) {
-      const randomNumber = Math.random();
-      const result = randomNumber < 0.5 ? 'heads' : 'tails';
-      const resultDisplay = document.getElementById('result');
-      const coinImage = document.getElementById('coinImage');
-      const tailImage = document.getElementById('tailImage');
+      const loader = document.getElementById('loader');
+      loader.style.display = 'block'; // Display the loader
 
-      // Hide both images initially
-      coinImage.style.display = 'none';
-      tailImage.style.display = 'none';
+      setTimeout(() => {
+        const randomNumber = Math.random();
+        const result = randomNumber < 0.5 ? 'heads' : 'tails';
+        const resultDisplay = document.getElementById('result');
+        const coinImage = document.getElementById('coinImage');
+        const tailImage = document.getElementById('tailImage');
 
-      // Display the appropriate image based on the result
-      if (result === 'heads') {
-        coinImage.style.display = 'block';
-      } else {
-        tailImage.style.display = 'block';
-      }
+        // Hide both images initially
+        coinImage.style.display = 'none';
+        tailImage.style.display = 'none';
 
-      // Update the result display
-      if (guess === result) {
-        resultDisplay.innerHTML = '<p class="win">You win!</p>';
-        wins++;
-        localStorage.setItem('wins', wins);
-      } else {
-        resultDisplay.innerHTML = '<p class="lose">You lose!</p>';
-        losses++;
-        localStorage.setItem('losses', losses);
-      }
+        // Display the appropriate image based on the result
+        if (result === 'heads') {
+          coinImage.style.display = 'block';
+        } else {
+          tailImage.style.display = 'block';
+        }
 
-      // Update the score display
-      updateScoreDisplay();
+        // Update the result display
+        if (guess === result) {
+          resultDisplay.innerHTML = '<p class="win">You win!</p>';
+          wins++;
+          localStorage.setItem('wins', wins);
+        } else {
+          resultDisplay.innerHTML = '<p class="lose">You lose!</p>';
+          losses++;
+          localStorage.setItem('losses', losses);
+        }
+
+        // Update the score display
+        updateScoreDisplay();
+
+        loader.style.display = 'none'; // Hide the loader
+      }, 1000); // Wait for 1 second before displaying the result
     }
   </script>
 </body>
